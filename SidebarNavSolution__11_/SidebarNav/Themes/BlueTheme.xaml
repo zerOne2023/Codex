@@ -1,0 +1,43 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ═══════════════ Blue Theme ═══════════════ -->
+
+    <SolidColorBrush x:Key="Sidebar.Background"          Color="#1E3A5F"/>
+    <SolidColorBrush x:Key="Sidebar.BorderBrush"         Color="#2A4A73"/>
+
+    <SolidColorBrush x:Key="Sidebar.AccentBrush"         Color="#60A5FA"/>
+    <SolidColorBrush x:Key="Sidebar.AccentLightBrush"    Color="#1E3A5F"/>
+
+    <SolidColorBrush x:Key="Sidebar.ForegroundBrush"     Color="#F0F4F8"/>
+    <SolidColorBrush x:Key="Sidebar.SecondaryForeground" Color="#94A3B8"/>
+    <SolidColorBrush x:Key="Sidebar.DisabledForeground"  Color="#475569"/>
+
+    <SolidColorBrush x:Key="Sidebar.IconBrush"           Color="#94A3B8"/>
+    <SolidColorBrush x:Key="Sidebar.IconActiveBrush"     Color="#60A5FA"/>
+
+    <SolidColorBrush x:Key="Sidebar.Item.HoverBrush"     Color="#2A4A73"/>
+    <SolidColorBrush x:Key="Sidebar.Item.SelectedBrush"  Color="#1D4ED8"/>
+    <SolidColorBrush x:Key="Sidebar.Item.PressedBrush"   Color="#1E40AF"/>
+
+    <SolidColorBrush x:Key="Sidebar.IndicatorBrush"      Color="#60A5FA"/>
+
+    <SolidColorBrush x:Key="Sidebar.Badge.Background"    Color="#F87171"/>
+    <SolidColorBrush x:Key="Sidebar.Badge.Foreground"    Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="Sidebar.Badge.TextBg"        Color="#2A4A73"/>
+    <SolidColorBrush x:Key="Sidebar.Badge.TextFg"        Color="#94A3B8"/>
+
+    <SolidColorBrush x:Key="Sidebar.Search.Background"   Color="#2A4A73"/>
+    <SolidColorBrush x:Key="Sidebar.Search.Foreground"   Color="#F0F4F8"/>
+    <SolidColorBrush x:Key="Sidebar.Search.Placeholder"  Color="#64748B"/>
+    <SolidColorBrush x:Key="Sidebar.Search.BorderBrush"  Color="#334155"/>
+    <SolidColorBrush x:Key="Sidebar.Search.FocusBorder"  Color="#60A5FA"/>
+
+    <SolidColorBrush x:Key="Sidebar.SeparatorBrush"      Color="#2A4A73"/>
+    <SolidColorBrush x:Key="Sidebar.GroupForeground"      Color="#64748B"/>
+    <SolidColorBrush x:Key="Sidebar.SearchHighlightFg"   Color="#60A5FA"/>
+    <SolidColorBrush x:Key="Sidebar.ExpandArrowBrush"    Color="#64748B"/>
+    <SolidColorBrush x:Key="Sidebar.ScrollBarThumb"      Color="#64748B"/>
+    <SolidColorBrush x:Key="Sidebar.ScrollBarTrack"      Color="Transparent"/>
+
+</ResourceDictionary>

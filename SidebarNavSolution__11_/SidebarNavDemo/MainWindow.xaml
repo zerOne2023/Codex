@@ -1,0 +1,211 @@
+<Window x:Class="SidebarNavDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SidebarNavDemo"
+        xmlns:sidebar="clr-namespace:SidebarNav.Controls;assembly=SidebarNav"
+        mc:Ignorable="d"
+        Title="SidebarNav Demo — Custom Control Library"
+        Height="700" Width="1100"
+        WindowStartupLocation="CenterScreen"
+        Background="#F3F4F6">
+
+    <Window.DataContext>
+        <local:MainViewModel/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Sidebar Navigation 控件 -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <sidebar:SidebarNavigation
+            Grid.Column="0"
+            ViewModel="{Binding Sidebar}"
+            IsExpanded="{Binding Sidebar.IsExpanded, Mode=TwoWay}"
+            ExpandedWidth="{Binding Sidebar.ExpandedWidth}"
+            MiniWidth="{Binding Sidebar.MiniWidth}"
+            ShowSearchBox="True"
+            ShowBackButton="True"
+            CornerRadius="0">
+
+            <!-- ═══ Header: Logo + Brand ═══ -->
+            <sidebar:SidebarNavigation.HeaderContent>
+                <StackPanel Orientation="Horizontal"
+                            Margin="16,16,16,4"
+                            VerticalAlignment="Center">
+                    <!-- Logo 圆形 -->
+                    <Ellipse Width="32" Height="32">
+                        <Ellipse.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#5B7FFF" Offset="0"/>
+                                <GradientStop Color="#A78BFA" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="SidebarNav"
+                                   Foreground="{DynamicResource Sidebar.ForegroundBrush}"
+                                   FontSize="16" FontWeight="Bold"/>
+                        <TextBlock Text="v1.0 Control Library"
+                                   Foreground="{DynamicResource Sidebar.SecondaryForeground}"
+                                   FontSize="10"/>
+                    </StackPanel>
+                </StackPanel>
+            </sidebar:SidebarNavigation.HeaderContent>
+
+            <!-- ═══ Footer: User Info + Theme Switcher ═══ -->
+            <sidebar:SidebarNavigation.FooterContent>
+                <StackPanel Margin="8,8,8,12">
+                    <!-- 分隔线 -->
+                    <Rectangle Height="1"
+                               Fill="{DynamicResource Sidebar.SeparatorBrush}"
+                               Margin="6,0,6,8"/>
+
+                    <!-- 主题切换 -->
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,4,0,8">
+                        <Button Content="Light" Click="OnLightTheme" Style="{DynamicResource ThemeBtn}" Margin="0,0,4,0"/>
+                        <Button Content="Dark" Click="OnDarkTheme" Style="{DynamicResource ThemeBtn}" Margin="0,0,4,0"/>
+                        <Button Content="Blue" Click="OnBlueTheme" Style="{DynamicResource ThemeBtn}"/>
+                    </StackPanel>
+
+                    <!-- 用户信息 -->
+                    <StackPanel Orientation="Horizontal" Margin="8,0">
+                        <Ellipse Width="36" Height="36">
+                            <Ellipse.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#F472B6" Offset="0"/>
+                                    <GradientStop Color="#7C3AED" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <StackPanel Margin="8,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="John Doe"
+                                       Foreground="{DynamicResource Sidebar.ForegroundBrush}"
+                                       FontSize="13" FontWeight="SemiBold"/>
+                            <TextBlock Text="john@example.com"
+                                       Foreground="{DynamicResource Sidebar.SecondaryForeground}"
+                                       FontSize="11"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </sidebar:SidebarNavigation.FooterContent>
+
+        </sidebar:SidebarNavigation>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- 右侧内容区 -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <Grid Grid.Column="1" Margin="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- 顶部工具栏 -->
+            <Border Grid.Row="0" Background="White" Padding="24,16"
+                    BorderBrush="#E5E7EB" BorderThickness="0,0,0,1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="{Binding CurrentPageTitle}"
+                                   FontSize="22" FontWeight="Bold"
+                                   Foreground="#1F2937"/>
+                        <TextBlock Text="{Binding CurrentPageDescription}"
+                                   FontSize="13" Foreground="#6B7280"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Theme:" Foreground="#6B7280" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="{Binding Sidebar.CurrentTheme}"
+                                   Foreground="#5B7FFF" FontWeight="SemiBold"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- 内容面板 -->
+            <Border Grid.Row="1" Background="White" Margin="24" CornerRadius="12"
+                    Padding="32">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="2" Opacity="0.08" Color="Black"/>
+                </Border.Effect>
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="🎯" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                    <TextBlock Text="SidebarNav Control Library"
+                               FontSize="28" FontWeight="Bold" Foreground="#1F2937"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock FontSize="14" Foreground="#6B7280" TextWrapping="Wrap"
+                               MaxWidth="500" TextAlignment="Center" Margin="0,12,0,0"
+                               LineHeight="22">
+                        This demo showcases the full feature set: nested multi-level items,
+                        real-time search with recursive matching, 3 badge types,
+                        Path/FontIcon/Image icons, group headers with separators,
+                        expand/mini mode, header/footer slots, navigation history (back),
+                        keyboard ↑↓←→ navigation, and theme switching.
+                    </TextBlock>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,24,0,0">
+                        <Border Background="#EEF2FF" CornerRadius="6" Padding="12,6" Margin="4">
+                            <TextBlock Text="Try searching 'Report'" Foreground="#5B7FFF" FontSize="12"/>
+                        </Border>
+                        <Border Background="#EEF2FF" CornerRadius="6" Padding="12,6" Margin="4">
+                            <TextBlock Text="Expand 'Documents'" Foreground="#5B7FFF" FontSize="12"/>
+                        </Border>
+                        <Border Background="#EEF2FF" CornerRadius="6" Padding="12,6" Margin="4">
+                            <TextBlock Text="Use ↑↓ keys" Foreground="#5B7FFF" FontSize="12"/>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+
+    <Window.Resources>
+        <!-- 主题切换按钮样式 -->
+        <Style x:Key="ThemeBtn" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource Sidebar.SecondaryForeground}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Sidebar.SeparatorBrush}"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <TextBlock Text="{TemplateBinding Content}"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       HorizontalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource Sidebar.Item.HoverBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Sidebar.AccentBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+</Window>

@@ -1,0 +1,17 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <!-- 默认主题（Light） -->
+        <ResourceDictionary Source="pack://application:,,,/SidebarNav;component/Themes/LightTheme.xaml"/>
+        
+        <!-- 控件样式 -->
+        <ResourceDictionary Source="pack://application:,,,/SidebarNav;component/Themes/SidebarIconPresenterStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/SidebarNav;component/Themes/SidebarBadgeStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/SidebarNav;component/Themes/SidebarSearchBoxStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/SidebarNav;component/Themes/SidebarNavGroupStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/SidebarNav;component/Themes/SidebarNavItemStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/SidebarNav;component/Themes/SidebarNavigationStyle.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

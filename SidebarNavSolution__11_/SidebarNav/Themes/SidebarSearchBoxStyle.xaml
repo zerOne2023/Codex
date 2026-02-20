@@ -1,0 +1,80 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ctrl="clr-namespace:SidebarNav.Controls"
+                    xmlns:conv="clr-namespace:SidebarNav.Converters">
+
+    <conv:BoolToVisibilityConverter x:Key="BoolToVis_Search"/>
+    <conv:InverseBoolToVisibilityConverter x:Key="InvBoolToVis_Search"/>
+
+    <Style TargetType="{x:Type ctrl:SidebarSearchBox}">
+        <Setter Property="Height" Value="34"/>
+        <Setter Property="Margin" Value="10,8"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ctrl:SidebarSearchBox}">
+                    <Border x:Name="SearchBorder"
+                            Background="{DynamicResource Sidebar.Search.Background}"
+                            BorderBrush="{DynamicResource Sidebar.Search.BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="8,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- 搜索图标 -->
+                            <Path Grid.Column="0"
+                                  Data="M10.5 3a7.5 7.5 0 0 1 5.645 12.438l4.709 4.708a.75.75 0 0 1-1.061 1.061l-4.708-4.709A7.5 7.5 0 1 1 10.5 3Zm0 1.5a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z"
+                                  Fill="{DynamicResource Sidebar.Search.Placeholder}"
+                                  Width="14" Height="14" Stretch="Uniform"
+                                  VerticalAlignment="Center"
+                                  Margin="0,0,6,0"/>
+
+                            <!-- 水印 -->
+                            <TextBlock Grid.Column="1"
+                                       Text="{TemplateBinding Placeholder}"
+                                       Foreground="{DynamicResource Sidebar.Search.Placeholder}"
+                                       VerticalAlignment="Center"
+                                       FontSize="13"
+                                       IsHitTestVisible="False"
+                                       Visibility="{Binding IsEmpty, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVis_Search}}"/>
+
+                            <!-- 输入框 -->
+                            <TextBox x:Name="PART_TextBox" Grid.Column="1"
+                                     Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Foreground="{DynamicResource Sidebar.Search.Foreground}"
+                                     CaretBrush="{DynamicResource Sidebar.AccentBrush}"
+                                     FontSize="13"
+                                     VerticalAlignment="Center"
+                                     Padding="0"/>
+
+                            <!-- 清除按钮 -->
+                            <Button x:Name="PART_ClearButton" Grid.Column="2"
+                                    Background="Transparent" BorderThickness="0"
+                                    Cursor="Hand"
+                                    Width="20" Height="20"
+                                    VerticalAlignment="Center"
+                                    Visibility="{Binding IsEmpty, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource InvBoolToVis_Search}}">
+                                <Path Data="M6.293 6.293a1 1 0 0 1 1.414 0L12 10.586l4.293-4.293a1 1 0 1 1 1.414 1.414L13.414 12l4.293 4.293a1 1 0 0 1-1.414 1.414L12 13.414l-4.293 4.293a1 1 0 0 1-1.414-1.414L10.586 12 6.293 7.707a1 1 0 0 1 0-1.414Z"
+                                      Fill="{DynamicResource Sidebar.Search.Placeholder}"
+                                      Width="10" Height="10" Stretch="Uniform"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="PART_TextBox" Property="IsFocused" Value="True">
+                            <Setter TargetName="SearchBorder" Property="BorderBrush" Value="{DynamicResource Sidebar.Search.FocusBorder}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
