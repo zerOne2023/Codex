@@ -247,6 +247,31 @@ ThemeManager.ApplyTheme("Corporate");
 | `ClearSearchCommand` | 清除搜索命令 |
 | `SwitchThemeCommand` | 切换主题命令 |
 
+### SidebarNavigation 事件
+
+| 事件 | 触发时机 | 事件参数 |
+|------|----------|----------|
+| `ItemSelected` | `SidebarViewModel.SelectedItem` 发生变化后触发（点击导航项、键盘确认、执行 GoBack）。仅在 `ViewModel` 绑定到 `SidebarNavigation` 时自动转发。 | `SidebarItemSelectedEventArgs`，可通过 `e.SelectedItem` 拿到当前选中项。 |
+| `ModeChanged` | `IsExpanded` 发生变化并启动宽度动画时触发。 | `RoutedEventArgs` |
+
+事件使用示例：
+
+```xml
+<sidebar:SidebarNavigation
+    ViewModel="{Binding SidebarVM}"
+    ItemSelected="SidebarNavigation_OnItemSelected" />
+```
+
+```csharp
+private void SidebarNavigation_OnItemSelected(object sender, SidebarItemSelectedEventArgs e)
+{
+    var selected = e.SelectedItem;
+    if (selected == null) return;
+
+    // 在这里执行页面切换 / 埋点 / 权限判断
+}
+```
+
 ### SidebarItemViewModel 属性
 
 | 属性 | 说明 |
