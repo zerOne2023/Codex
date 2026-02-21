@@ -139,6 +139,25 @@ sidebar.SelectedItemChanged += (s, item) =>
 };
 ```
 
+### 5. Image 图标用法（`IconImageSource`）
+
+```csharp
+group.Items.Add(new SidebarItemViewModel
+{
+    Id = "assets",
+    Title = "Asset Center",
+    // 推荐使用 pack URI（程序集资源）
+    IconImageSource = "pack://application:,,,/SidebarNavDemo;component/Assets/Icons/folder.png"
+});
+
+// 也支持相对/绝对路径（需确保运行时可访问）
+new SidebarItemViewModel { Id = "local", Title = "Local", IconImageSource = "Assets/Icons/local.png" };
+new SidebarItemViewModel { Id = "abs", Title = "Absolute", IconImageSource = @"C:\Icons\server.png" };
+```
+
+> `IconImageSource` 传入值必须是 WPF `Image.Source` 可解析的 URI 字符串（pack URI、相对路径或绝对路径）。
+> 建议优先使用 pack URI，避免部署路径变化导致加载失败。
+
 ---
 
 ## 🎨 主题系统
