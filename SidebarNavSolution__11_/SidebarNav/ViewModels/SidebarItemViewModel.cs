@@ -193,11 +193,22 @@ namespace SidebarNav.ViewModels
         }
 
         private string _iconImageSource;
-        /// <summary>图片图标 URI</summary>
+        /// <summary>
+        /// 图片图标 URI（WPF 可解析）：
+        /// pack URI（如 "pack://application:,,,/MyApp;component/Assets/home.png"）、
+        /// 相对路径（如 "Assets/home.png"）或绝对路径/URL。
+        /// </summary>
         public string IconImageSource
         {
             get => _iconImageSource;
-            set { SetProperty(ref _iconImageSource, value); if (value != null) IconType = IconType.Image; }
+            set
+            {
+                var normalized = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                if (SetProperty(ref _iconImageSource, normalized) && !string.IsNullOrEmpty(normalized))
+                {
+                    IconType = IconType.Image;
+                }
+            }
         }
 
         private double _iconSize = 20;
