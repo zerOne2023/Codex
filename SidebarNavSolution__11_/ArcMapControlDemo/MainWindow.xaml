@@ -5,18 +5,91 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:ArcMapControl.Controls;assembly=ArcMapControl"
         mc:Ignorable="d"
-        Title="ArcGIS风格地图控件示例" Height="720" Width="1200">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        Title="ArcGIS风格地图控件完整示例" Height="760" Width="1280">
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Padding="8" BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center" Text="示例能力：SHP / 用户库图层 / XYZ叠瓦 / 天地图 / 三度六度经纬度动校正" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="全图" Width="80" Margin="0,0,8,0" Click="OnFullExtentClick" />
+                    <Button Content="应用参数" Width="90" Click="OnApplyCorrectionClick" />
+                </StackPanel>
+            </Grid>
+        </Border>
 
-        <StackPanel Orientation="Horizontal" Margin="8">
-            <Button Content="全图" Width="80" Margin="0,0,8,0" Click="OnFullExtentClick" />
-            <TextBlock VerticalAlignment="Center" Text="支持SHP/叠瓦图/天地图挂接，支持三度六度/经纬度参数化动校正" />
-        </StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <controls:MapViewControl x:Name="MapView" Grid.Row="1" Margin="8" />
-    </Grid>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <GroupBox Header="坐标校正参数" Margin="0,0,0,8">
+                        <Grid Margin="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="模式" />
+                            <ComboBox x:Name="ModeComboBox" Grid.Row="0" Grid.Column="1" Margin="0,2" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Text="椭球体" />
+                            <ComboBox x:Name="EllipsoidComboBox" Grid.Row="1" Grid.Column="1" Margin="0,2" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Text="中央经线" />
+                            <TextBox x:Name="CentralMeridianTextBox" Grid.Row="2" Grid.Column="1" Margin="0,2" Text="117" />
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Text="比例因子" />
+                            <TextBox x:Name="ScaleFactorTextBox" Grid.Row="3" Grid.Column="1" Margin="0,2" Text="1" />
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Text="东偏移" />
+                            <TextBox x:Name="FalseEastingTextBox" Grid.Row="4" Grid.Column="1" Margin="0,2" Text="0" />
+
+                            <TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Text="北偏移" />
+                            <TextBox x:Name="FalseNorthingTextBox" Grid.Row="5" Grid.Column="1" Margin="0,2" Text="0" />
+
+                            <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Foreground="#FF666666" Margin="0,6,0,0" TextWrapping="Wrap"
+                                       Text="说明：该示例演示参数化流程。生产可将 ProjectionEngine 替换为高精度高斯-克吕格算法。" />
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Header="图层控制" Margin="0,0,0,8">
+                        <StackPanel Margin="8">
+                            <CheckBox x:Name="OsmLayerCheckBox" Content="OSM叠瓦" IsChecked="True" Checked="OnLayerVisibilityChanged" Unchecked="OnLayerVisibilityChanged" />
+                            <CheckBox x:Name="TiandituLayerCheckBox" Content="天地图叠瓦" IsChecked="False" Checked="OnLayerVisibilityChanged" Unchecked="OnLayerVisibilityChanged" />
+                            <CheckBox x:Name="ShpLayerCheckBox" Content="SHP图层（Data/sample.shp）" IsChecked="True" Checked="OnLayerVisibilityChanged" Unchecked="OnLayerVisibilityChanged" />
+                            <CheckBox x:Name="UserLayerCheckBox" Content="用户库图层（模拟企业POI）" IsChecked="True" Checked="OnLayerVisibilityChanged" Unchecked="OnLayerVisibilityChanged" />
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="天地图配置">
+                        <StackPanel Margin="8">
+                            <TextBlock Text="Token" />
+                            <TextBox x:Name="TiandituTokenTextBox" Margin="0,4,0,6" Text="请替换你的天地图token" />
+                            <TextBlock Text="样式（vec_w/img_w/cva_w...）" />
+                            <TextBox x:Name="TiandituStyleTextBox" Margin="0,4,0,0" Text="vec_w" />
+                            <Button Content="更新天地图图层" Margin="0,8,0,0" Click="OnUpdateTiandituClick" />
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </ScrollViewer>
+
+            <controls:MapViewControl x:Name="MapView" Grid.Column="1" Margin="8" />
+        </Grid>
+    </DockPanel>
 </Window>
