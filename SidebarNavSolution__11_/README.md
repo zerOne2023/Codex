@@ -132,6 +132,16 @@ group.Items.Add(new SidebarItemViewModel
 
 sidebar.Groups.Add(group);
 
+// Image 图标示例（IconImageSource 必须是 WPF 可解析 URI）
+group.Items.Add(new SidebarItemViewModel
+{
+    Id = "settings",
+    Title = "Settings",
+    IconImageSource = "pack://application:,,,/MyApp;component/Assets/Icons/settings.png"
+});
+
+// 也可以使用相对/绝对路径（例如："Assets/Icons/help.png"、"C:/Icons/help.png"）
+
 // 监听选中变更
 sidebar.SelectedItemChanged += (s, item) =>
 {
