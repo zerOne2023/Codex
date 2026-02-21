@@ -181,7 +181,8 @@ namespace SidebarNav.ViewModels
                     }
                     else
                     {
-                        SelectedItem = item;
+                        if (SelectedItem != item)
+                            SelectedItem = item;
                         item.NavigateCommand?.Execute(item);
                     }
                 }));
@@ -357,12 +358,15 @@ namespace SidebarNav.ViewModels
         public bool SelectById(string id)
         {
             var item = FindItemById(id);
-            if (item != null)
-            {
+            if (item == null) return false;
+
+            if (SelectedItem != item)
                 SelectedItem = item;
-                return true;
-            }
-            return false;
+
+            if (!item.HasChildren)
+                item.NavigateCommand?.Execute(item);
+
+            return true;
         }
 
         /// <summary>获取所有项的扁平列表</summary>
