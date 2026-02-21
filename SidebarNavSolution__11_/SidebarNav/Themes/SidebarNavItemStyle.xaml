@@ -70,6 +70,7 @@
                                                Visibility="{Binding IconType, Converter={StaticResource IconTypeVis_Item}, ConverterParameter=FontIcon}"/>
 
                                     <Image x:Name="ImageIcon"
+                                           Source="{Binding IconImageSource, FallbackValue={x:Null}, TargetNullValue={x:Null}}"
                                            Width="{Binding IconSize}" Height="{Binding IconSize}"
                                            Stretch="Uniform"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"
