@@ -40,9 +40,23 @@ namespace SidebarNav.Controls
 
         private static void OnViewModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            if (d is SidebarNavigation navigation)
+            {
+                if (e.OldValue is SidebarViewModel oldViewModel)
+                    oldViewModel.SelectedItemChanged -= navigation.OnSelectedItemChanged;
+
+                if (e.NewValue is SidebarViewModel newViewModel)
+                    newViewModel.SelectedItemChanged += navigation.OnSelectedItemChanged;
+            }
+
             // ViewModel 通过 DependencyProperty 存储，模板中通过
             // RelativeSource TemplatedParent 访问，不需要覆盖 DataContext。
             // 覆盖 DataContext 会破坏外部的 ViewModel="{Binding Sidebar}" 绑定。
+        }
+
+        private void OnSelectedItemChanged(object sender, SidebarItemViewModel selectedItem)
+        {
+            RaiseEvent(new SidebarItemSelectedEventArgs(ItemSelectedEvent, this, selectedItem));
         }
 
         #endregion
@@ -252,5 +266,17 @@ namespace SidebarNav.Controls
             base.OnApplyTemplate();
             Focusable = true;
         }
+
+    }
+
+    public class SidebarItemSelectedEventArgs : RoutedEventArgs
+    {
+        public SidebarItemSelectedEventArgs(RoutedEvent routedEvent, object source, SidebarItemViewModel selectedItem)
+            : base(routedEvent, source)
+        {
+            SelectedItem = selectedItem;
+        }
+
+        public SidebarItemViewModel SelectedItem { get; }
     }
 }
