@@ -276,5 +276,16 @@ namespace SidebarNav.Controls
         }
 
         public SidebarItemViewModel SelectedItem { get; }
+
+        protected override void InvokeEventHandler(Delegate genericHandler, object genericTarget)
+        {
+            if (genericHandler is EventHandler<SidebarItemSelectedEventArgs> handler)
+            {
+                handler(genericTarget, this);
+                return;
+            }
+
+            base.InvokeEventHandler(genericHandler, genericTarget);
+        }
     }
 }
