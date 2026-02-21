@@ -10,16 +10,20 @@ namespace SidebarNav.Services
     /// </summary>
     public static class SidebarSearchService
     {
+        public const StringComparison DefaultComparison = StringComparison.OrdinalIgnoreCase;
+
         /// <summary>
         /// 递归过滤项目树，返回匹配的项
         /// </summary>
         public static List<SidebarItemViewModel> Search(
             IEnumerable<SidebarItemViewModel> items,
             string keyword,
-            StringComparison comparison = StringComparison.OrdinalIgnoreCase)
+            StringComparison comparison = DefaultComparison)
         {
             var results = new List<SidebarItemViewModel>();
             if (string.IsNullOrWhiteSpace(keyword) || items == null) return results;
+
+            keyword = keyword.Trim();
 
             foreach (var item in items)
             {

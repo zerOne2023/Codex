@@ -98,6 +98,20 @@ namespace SidebarNav.ViewModels
             }
         }
 
+        private StringComparison _searchComparison = SidebarSearchService.DefaultComparison;
+        /// <summary>搜索比较策略（默认 OrdinalIgnoreCase）</summary>
+        public StringComparison SearchComparison
+        {
+            get => _searchComparison;
+            set
+            {
+                if (SetProperty(ref _searchComparison, value))
+                {
+                    ApplySearch(SearchText);
+                }
+            }
+        }
+
         private bool _isSearchActive;
         public bool IsSearchActive
         {
@@ -211,7 +225,7 @@ namespace SidebarNav.ViewModels
         {
             bool hasKeyword = !string.IsNullOrWhiteSpace(keyword);
             IsSearchActive = hasKeyword;
-            keyword = keyword?.Trim().ToLowerInvariant();
+            keyword = keyword?.Trim();
 
             foreach (var group in Groups)
             {
@@ -238,8 +252,7 @@ namespace SidebarNav.ViewModels
                 return true;
             }
 
-            bool selfMatch = item.Title != null &&
-                             item.Title.ToLowerInvariant().Contains(keyword);
+            bool selfMatch = item.Title?.IndexOf(keyword, SearchComparison) >= 0;
             item.IsSearchHighlighted = selfMatch;
 
             bool childMatch = false;
