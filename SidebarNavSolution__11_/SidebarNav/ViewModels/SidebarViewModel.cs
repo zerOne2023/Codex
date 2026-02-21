@@ -58,7 +58,7 @@ namespace SidebarNav.ViewModels
         public bool IsExpanded
         {
             get => _isExpanded;
-            set => SetProperty(ref _isExpanded, value);
+            set => SetProperty(ref _isExpanded, value, onChanged: () => OnPropertyChanged(nameof(CurrentWidth)));
         }
 
         private double _expandedWidth = 240;
@@ -66,7 +66,7 @@ namespace SidebarNav.ViewModels
         public double ExpandedWidth
         {
             get => _expandedWidth;
-            set => SetProperty(ref _expandedWidth, value);
+            set => SetProperty(ref _expandedWidth, value, onChanged: () => OnPropertyChanged(nameof(CurrentWidth)));
         }
 
         private double _miniWidth = 60;
@@ -74,7 +74,7 @@ namespace SidebarNav.ViewModels
         public double MiniWidth
         {
             get => _miniWidth;
-            set => SetProperty(ref _miniWidth, value);
+            set => SetProperty(ref _miniWidth, value, onChanged: () => OnPropertyChanged(nameof(CurrentWidth)));
         }
 
         /// <summary>当前宽度</summary>
@@ -146,7 +146,6 @@ namespace SidebarNav.ViewModels
             _toggleExpandCommand ?? (_toggleExpandCommand = new RelayCommand(() =>
             {
                 IsExpanded = !IsExpanded;
-                OnPropertyChanged(nameof(CurrentWidth));
             }));
 
         private RelayCommand _goBackCommand;
