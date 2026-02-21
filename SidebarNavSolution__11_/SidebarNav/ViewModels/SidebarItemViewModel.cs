@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -279,17 +280,21 @@ namespace SidebarNav.ViewModels
             get => _children;
             set
             {
+                if (ReferenceEquals(_children, value))
+                    return;
+
+                if (_children != null)
+                    _children.CollectionChanged -= OnChildrenCollectionChanged;
+
                 if (SetProperty(ref _children, value))
                 {
-                    OnPropertyChanged(nameof(HasChildren));
-                    if (value != null)
+                    if (_children != null)
                     {
-                        foreach (var child in value)
-                        {
-                            child.Parent = this;
-                            child.Level = this.Level + 1;
-                        }
+                        _children.CollectionChanged += OnChildrenCollectionChanged;
+                        RebuildChildHierarchy();
                     }
+
+                    OnPropertyChanged(nameof(HasChildren));
                 }
             }
         }
@@ -297,25 +302,65 @@ namespace SidebarNav.ViewModels
         /// <summary>添加子项</summary>
         public void AddChild(SidebarItemViewModel child)
         {
+            if (child == null) return;
+
             if (Children == null)
                 Children = new ObservableCollection<SidebarItemViewModel>();
-            child.Parent = this;
-            child.Level = this.Level + 1;
+
             Children.Add(child);
-            OnPropertyChanged(nameof(HasChildren));
         }
 
         /// <summary>移除子项</summary>
         public bool RemoveChild(SidebarItemViewModel child)
         {
             if (Children == null) return false;
-            var removed = Children.Remove(child);
-            if (removed)
+
+            return Children.Remove(child);
+        }
+
+        private void OnChildrenCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if ((e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Replace)
+                && e.NewItems != null)
             {
-                child.Parent = null;
-                OnPropertyChanged(nameof(HasChildren));
+                foreach (SidebarItemViewModel child in e.NewItems)
+                    AttachChild(child);
             }
-            return removed;
+
+            if ((e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Replace)
+                && e.OldItems != null)
+            {
+                foreach (SidebarItemViewModel child in e.OldItems)
+                    DetachChild(child);
+            }
+
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                RebuildChildHierarchy();
+            }
+
+            OnPropertyChanged(nameof(HasChildren));
+        }
+
+        private void AttachChild(SidebarItemViewModel child)
+        {
+            if (child == null) return;
+            child.Parent = this;
+            child.Level = Level + 1;
+        }
+
+        private void DetachChild(SidebarItemViewModel child)
+        {
+            if (child == null) return;
+            child.Parent = null;
+        }
+
+        private void RebuildChildHierarchy()
+        {
+            if (Children == null) return;
+
+            foreach (var child in Children)
+                AttachChild(child);
         }
 
         #endregion
