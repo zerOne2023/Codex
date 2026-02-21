@@ -117,7 +117,7 @@
                         <Storyboard>
                             <DoubleAnimation Storyboard.TargetName="PART_VerticalScrollBar"
                                              Storyboard.TargetProperty="Opacity"
-                                             To="0" Duration="0:0:0.6"/>
+                                             To="0" Duration="0:0:0.26"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.ExitActions>

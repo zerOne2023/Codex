@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using SidebarNav.ViewModels;
 
 namespace SidebarNav.Controls
@@ -19,6 +20,11 @@ namespace SidebarNav.Controls
         private const string PART_ScrollViewer = "PART_ScrollViewer";
         private const string PART_ItemsHost = "PART_ItemsHost";
         private const string PART_RootBorder = "PART_RootBorder";
+        private const string PART_VerticalScrollBar = "PART_VerticalScrollBar";
+
+        private ScrollViewer _scrollViewer;
+        private ScrollBar _verticalScrollBar;
+        private readonly DispatcherTimer _scrollBarFadeTimer = new DispatcherTimer();
 
         static SidebarNavigation()
         {
@@ -208,7 +214,13 @@ namespace SidebarNav.Controls
         private void AnimateWidth(bool expand)
         {
             var target = expand ? ExpandedWidth : MiniWidth;
-            var from = expand ? MiniWidth : ExpandedWidth;
+            var from = !double.IsNaN(ActualWidth) && ActualWidth > 0
+                ? ActualWidth
+                : (!double.IsNaN(Width) && Width > 0
+                    ? Width
+                    : (expand ? MiniWidth : ExpandedWidth));
+
+            BeginAnimation(WidthProperty, null);
 
             var animation = new DoubleAnimation
             {
@@ -218,7 +230,9 @@ namespace SidebarNav.Controls
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
             };
 
-            this.BeginAnimation(WidthProperty, animation);
+            animation.Completed += (_, __) => Width = target;
+
+            BeginAnimation(WidthProperty, animation);
         }
 
         #endregion
@@ -251,6 +265,69 @@ namespace SidebarNav.Controls
         {
             base.OnApplyTemplate();
             Focusable = true;
+
+            if (_scrollViewer != null)
+            {
+                _scrollViewer.ScrollChanged -= OnScrollViewerScrollChanged;
+                _scrollViewer.PreviewMouseWheel -= OnScrollViewerPreviewMouseWheel;
+            }
+
+            _scrollViewer = GetTemplateChild(PART_ScrollViewer) as ScrollViewer;
+            _verticalScrollBar = _scrollViewer?.Template?.FindName(PART_VerticalScrollBar, _scrollViewer) as ScrollBar;
+
+            if (_scrollViewer != null)
+            {
+                _scrollViewer.ScrollChanged += OnScrollViewerScrollChanged;
+                _scrollViewer.PreviewMouseWheel += OnScrollViewerPreviewMouseWheel;
+            }
+
+            _scrollBarFadeTimer.Stop();
+            _scrollBarFadeTimer.Interval = TimeSpan.FromMilliseconds(700);
+            _scrollBarFadeTimer.Tick -= OnScrollBarFadeTimerTick;
+            _scrollBarFadeTimer.Tick += OnScrollBarFadeTimerTick;
+        }
+
+        private void OnScrollViewerPreviewMouseWheel(object sender, MouseWheelEventArgs e) => ShowScrollBarBriefly();
+
+        private void OnScrollViewerScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (e.VerticalChange != 0 || e.ExtentHeightChange != 0)
+                ShowScrollBarBriefly();
+        }
+
+        private void ShowScrollBarBriefly()
+        {
+            if (_verticalScrollBar == null || _verticalScrollBar.Visibility != Visibility.Visible)
+                return;
+
+            AnimateScrollBarOpacity(1, TimeSpan.FromMilliseconds(90));
+            _scrollBarFadeTimer.Stop();
+            _scrollBarFadeTimer.Start();
+        }
+
+        private void OnScrollBarFadeTimerTick(object sender, EventArgs e)
+        {
+            _scrollBarFadeTimer.Stop();
+
+            if (_scrollViewer?.IsMouseOver == true)
+                return;
+
+            AnimateScrollBarOpacity(0, TimeSpan.FromMilliseconds(260));
+        }
+
+        private void AnimateScrollBarOpacity(double to, TimeSpan duration)
+        {
+            if (_verticalScrollBar == null)
+                return;
+
+            var animation = new DoubleAnimation
+            {
+                To = to,
+                Duration = new Duration(duration),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            _verticalScrollBar.BeginAnimation(OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
         }
     }
 }

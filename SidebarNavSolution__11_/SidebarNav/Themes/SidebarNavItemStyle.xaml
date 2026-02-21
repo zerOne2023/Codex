@@ -22,7 +22,8 @@
                                 Background="Transparent"
                                 CornerRadius="6"
                                 Margin="6,1"
-                                MinHeight="38">
+                                MinHeight="38"
+                                Opacity="0.97">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <!-- 缩进 -->
@@ -46,6 +47,7 @@
                                 <!-- 选中指示条 -->
                                 <Rectangle x:Name="Indicator" Grid.Column="1"
                                            Width="3" Height="0"
+                                           Opacity="0"
                                            RadiusX="1.5" RadiusY="1.5"
                                            Fill="{DynamicResource Sidebar.IndicatorBrush}"
                                            VerticalAlignment="Center"
@@ -96,6 +98,7 @@
 
                                 <!-- 展开箭头 -->
                                 <Path x:Name="ExpandArrow" Grid.Column="5"
+                                      Opacity="0.92"
                                       Data="M8 4l8 8-8 8"
                                       Stroke="{DynamicResource Sidebar.ExpandArrowBrush}"
                                       StrokeThickness="1.5"
@@ -114,7 +117,8 @@
                         </Border>
 
                         <!-- 子项容器 -->
-                        <ItemsControl x:Name="ChildrenHost"
+                        <Border x:Name="ChildrenContainer" Opacity="0" MaxHeight="0" ClipToBounds="True">
+                            <ItemsControl x:Name="ChildrenHost"
                                       ItemsSource="{Binding Children}"
                                       Visibility="Collapsed">
                             <ItemsControl.ItemTemplate>
@@ -133,6 +137,8 @@
                             <Setter TargetName="Badge" Property="Visibility" Value="Collapsed"/>
                             <Setter TargetName="ExpandArrow" Property="Visibility" Value="Collapsed"/>
                             <Setter TargetName="ChildrenHost" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="ChildrenContainer" Property="MaxHeight" Value="0"/>
+                            <Setter TargetName="ChildrenContainer" Property="Opacity" Value="0"/>
                             <Setter TargetName="IndentBorder" Property="Width" Value="0"/>
                             <Setter TargetName="Indicator" Property="Visibility" Value="Collapsed"/>
                             <Setter TargetName="ItemBorder" Property="Margin" Value="6,1"/>
@@ -150,6 +156,22 @@
                             <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource Sidebar.Item.HoverBrush}"/>
                             <Setter TargetName="PathIcon" Property="Fill" Value="{DynamicResource Sidebar.IconActiveBrush}"/>
                             <Setter TargetName="FontIcon" Property="Foreground" Value="{DynamicResource Sidebar.IconActiveBrush}"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ItemBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.12"/>
+                                        <DoubleAnimation Storyboard.TargetName="ExpandArrow" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.12"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ItemBorder" Storyboard.TargetProperty="Opacity" To="0.97" Duration="0:0:0.18"/>
+                                        <DoubleAnimation Storyboard.TargetName="ExpandArrow" Storyboard.TargetProperty="Opacity" To="0.92" Duration="0:0:0.18"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
                         </Trigger>
 
                         <!-- ═══ 选中 ═══ -->
@@ -159,17 +181,72 @@
                             <Setter TargetName="TitleText" Property="FontWeight" Value="SemiBold"/>
                             <Setter TargetName="PathIcon" Property="Fill" Value="{DynamicResource Sidebar.IconActiveBrush}"/>
                             <Setter TargetName="FontIcon" Property="Foreground" Value="{DynamicResource Sidebar.IconActiveBrush}"/>
-                            <Setter TargetName="Indicator" Property="Height" Value="20"/>
+                            <Setter TargetName="Indicator" Property="Opacity" Value="1"/>
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="Indicator" Storyboard.TargetProperty="Height" To="20" Duration="0:0:0.16">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="Indicator" Storyboard.TargetProperty="Height" To="0" Duration="0:0:0.16">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseIn"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="Indicator" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.16"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
                         </DataTrigger>
 
                         <!-- ═══ 展开子项 ═══ -->
                         <DataTrigger Binding="{Binding IsExpanded}" Value="True">
                             <Setter TargetName="ChildrenHost" Property="Visibility" Value="Visible"/>
-                            <Setter TargetName="ExpandArrow" Property="RenderTransform">
-                                <Setter.Value>
-                                    <RotateTransform Angle="90"/>
-                                </Setter.Value>
-                            </Setter>
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ChildrenContainer" Storyboard.TargetProperty="MaxHeight" To="800" Duration="0:0:0.2">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="ChildrenContainer" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.18"/>
+                                        <DoubleAnimation Storyboard.TargetName="ExpandArrow" Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)" To="90" Duration="0:0:0.18">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ChildrenContainer" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.14"/>
+                                        <DoubleAnimation Storyboard.TargetName="ChildrenContainer" Storyboard.TargetProperty="MaxHeight" To="0" Duration="0:0:0.18">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseIn"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="ExpandArrow" Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)" To="0" Duration="0:0:0.18">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ChildrenHost" Storyboard.TargetProperty="Visibility">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0.18" Value="{x:Static Visibility.Collapsed}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
                         </DataTrigger>
 
                         <!-- ═══ 搜索高亮 ═══ -->
