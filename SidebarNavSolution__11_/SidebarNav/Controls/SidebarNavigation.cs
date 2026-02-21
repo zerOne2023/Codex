@@ -40,6 +40,14 @@ namespace SidebarNav.Controls
 
         private static void OnViewModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            if (!(d is SidebarNavigation nav)) return;
+
+            if (e.OldValue is SidebarViewModel oldViewModel)
+                oldViewModel.SelectedItemChanged -= nav.OnSelectedItemChanged;
+
+            if (e.NewValue is SidebarViewModel newViewModel)
+                newViewModel.SelectedItemChanged += nav.OnSelectedItemChanged;
+
             // ViewModel 通过 DependencyProperty 存储，模板中通过
             // RelativeSource TemplatedParent 访问，不需要覆盖 DataContext。
             // 覆盖 DataContext 会破坏外部的 ViewModel="{Binding Sidebar}" 绑定。
@@ -171,9 +179,9 @@ namespace SidebarNav.Controls
 
         public static readonly RoutedEvent ItemSelectedEvent =
             EventManager.RegisterRoutedEvent(nameof(ItemSelected), RoutingStrategy.Bubble,
-                typeof(RoutedEventHandler), typeof(SidebarNavigation));
+                typeof(EventHandler<SidebarItemSelectedEventArgs>), typeof(SidebarNavigation));
 
-        public event RoutedEventHandler ItemSelected
+        public event EventHandler<SidebarItemSelectedEventArgs> ItemSelected
         {
             add { AddHandler(ItemSelectedEvent, value); }
             remove { RemoveHandler(ItemSelectedEvent, value); }
@@ -190,6 +198,11 @@ namespace SidebarNav.Controls
         }
 
         #endregion
+
+        private void OnSelectedItemChanged(object sender, SidebarItemViewModel selectedItem)
+        {
+            RaiseEvent(new SidebarItemSelectedEventArgs(ItemSelectedEvent, this, selectedItem));
+        }
 
         #region 展开动画
 
@@ -251,6 +264,28 @@ namespace SidebarNav.Controls
         {
             base.OnApplyTemplate();
             Focusable = true;
+        }
+    }
+
+    public class SidebarItemSelectedEventArgs : RoutedEventArgs
+    {
+        public SidebarItemSelectedEventArgs(RoutedEvent routedEvent, object source, SidebarItemViewModel selectedItem)
+            : base(routedEvent, source)
+        {
+            SelectedItem = selectedItem;
+        }
+
+        public SidebarItemViewModel SelectedItem { get; }
+
+        protected override void InvokeEventHandler(Delegate genericHandler, object genericTarget)
+        {
+            if (genericHandler is EventHandler<SidebarItemSelectedEventArgs> handler)
+            {
+                handler(genericTarget, this);
+                return;
+            }
+
+            base.InvokeEventHandler(genericHandler, genericTarget);
         }
     }
 }
