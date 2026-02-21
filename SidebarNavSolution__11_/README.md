@@ -139,6 +139,30 @@ sidebar.SelectedItemChanged += (s, item) =>
 };
 ```
 
+### 5. 监听 SidebarNavigation 的路由事件（推荐）
+
+`SidebarNavigation.ItemSelected` 会在 `SidebarViewModel.SelectedItemChanged` 触发后立即冒泡触发，
+也就是当用户点击叶子节点、键盘确认选中项，或执行 `GoBackCommand` 导致选中项变化时触发。
+
+```xml
+<sidebar:SidebarNavigation
+    x:Name="MainSidebar"
+    ViewModel="{Binding SidebarVM}"
+    ItemSelected="Sidebar_ItemSelected"/>
+```
+
+```csharp
+private void Sidebar_ItemSelected(object sender, RoutedEventArgs e)
+{
+    if (e is SidebarItemSelectedEventArgs args && args.SelectedItem != null)
+    {
+        // 可直接拿到当前选中项
+        var item = args.SelectedItem;
+        // TODO: 执行页面导航/埋点上报
+    }
+}
+```
+
 ---
 
 ## 🎨 主题系统
